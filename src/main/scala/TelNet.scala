@@ -16,10 +16,10 @@ object TelNet {
       throw new Exception("Set the paths to directories and date in parameters \"input=\", \"output=\" and \"date=\"")
     }
     val date = DateTime.parse(dateParam.get)
-    val GSMFilePath = "%s/gsm/year=%04d/month=%02d/day=%02d/*.csv"format(input.get, date.getYear, date.getMonthOfYear, date.getDayOfMonth)
-    val LTEFilePath = "%s/lte/year=%04d/month=%02d/day=%02d/*.csv"format(input.get, date.getYear, date.getMonthOfYear, date.getDayOfMonth)
-    val UMTSPath = "%s/umts/year=%04d/month=%02d/day=%02d/*.csv"format(input.get, date.getYear, date.getMonthOfYear, date.getDayOfMonth)
-    val SiteFilePath = "%s/site/year=%04d/month=%02d/day=%02d/*.csv"format(input.get, date.getYear, date.getMonthOfYear, date.getDayOfMonth)
+    val GSMFilePath = getPath(input.get, "gsm", date)
+    val LTEFilePath = getPath(input.get, "lte", date)
+    val UMTSPath = getPath(input.get, "umts", date)
+    val SiteFilePath = getPath(input.get, "site", date)
     val spark = SparkSession.builder.appName("Simple Application").master("local[*]").getOrCreate()
     import org.apache.spark.sql.functions._
 
@@ -106,6 +106,18 @@ object TelNet {
       case "3g" => "frequency_band_U"
       case "4g" => "frequency_band_L"
     }
+  }
+
+  /**
+    * Returns path from date, bucket and input
+    * @param input input path
+    * @param subbucket sub path
+    * @param date from parameters
+    * @return path to files
+    */
+  def getPath(input: String, subbucket: String, date: DateTime): String = {
+    "%s/%s/year=%04d/month=%02d/day=%02d/*.csv".
+      format(input, subbucket, date.getYear, date.getMonthOfYear, date.getDayOfMonth)
   }
 }
 
