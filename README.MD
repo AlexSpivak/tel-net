@@ -1,7 +1,11 @@
 This is a simple implementation for required task. 
 For submitting the job run 
 
-Submit spark job with following parameters:
+```
+sbt package
+```
+
+spark-submit path/to/jar with following parameters:
 ```
 input=path/to/input
 output=/path/to/ouptut
